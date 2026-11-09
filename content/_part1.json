@@ -1,0 +1,308 @@
+{
+  "course": {
+    "title": "How to Use LLMs",
+    "subtitle": "A practical course distilled from Andrej Karpathy's segmented talk on working with language models.",
+    "description": "Learn what happens inside an LLM chat, how to judge its stored knowledge, and how to keep conversations focused. Then practice choosing models and using search, research, uploaded sources, code tools, generated diagrams, and coding agents with appropriate verification.",
+    "attribution": "Based on Andrej Karpathy's segmented talk. Citations use the source segment and timestamp format (seg NN, MM:SS); product names, prices, and model availability reflect the talk's recording context."
+  },
+  "chapters": [
+    { "id": "ch1", "number": 1, "title": "LLM Foundations", "tagline": "How the Magic Trick Works", "lessonIds": ["01-how-an-llm-chat-works", "02-knowledge-queries-trust", "03-new-chat-per-topic", "04-models-and-pricing-tiers", "05-thinking-models"] },
+    { "id": "ch2", "number": 2, "title": "Tools & Research", "tagline": "Tools that extend the model beyond its training data", "lessonIds": ["06-internet-search-tool", "07-deep-research", "08-file-uploads-papers-books", "09-python-interpreter", "10-advanced-data-analysis", "11-claude-artifacts-diagrams", "12-cursor-vibe-coding"] }
+  ],
+  "lessons": [
+    {
+      "id": "01-how-an-llm-chat-works", "segment": "01", "segmentKey": "01_how_an_llm_chat_works", "chapter": "ch1", "number": 1, "title": "How an LLM chat works",
+      "summary": "A chat is a shared token stream that grows turn by turn; its contents are the model's working context. The model's learned knowledge and assistant persona come from training, while tools are supplied by the surrounding application.",
+      "objectives": ["Describe how user and model turns append to a token sequence.", "Explain why the conversation is called a context window.", "Distinguish pre-training from post-training.", "Recognize the knowledge cutoff and tool limits of a model answering from its weights."],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Think of a chat as a one-dimensional stream of tokens. You add a message and press Enter; control passes to the model, which appends its reply until it emits an end-of-turn marker. The app then hands control back to you. The accumulated exchange is the <strong>context window</strong>: the conversation's working memory, directly available to the model (seg 01, 00:07–00:54).</p>" },
+        { "heading": "Where the model comes from", "html": "<p><strong>Pre-training</strong> compresses patterns from internet text into model parameters through next-token prediction. Karpathy uses a lossy, probabilistic “zip file” as an analogy: it captures patterns and associations, not an exact searchable archive. <strong>Post-training</strong> uses human-built conversations to shape an assistant persona. Knowledge and conversational style are both baked into the resulting model (seg 01, 01:13–02:29; 03:40–04:24).</p><p>Because pre-training is costly and infrequent, a model's stored knowledge has a cutoff. New events need to be brought into the conversation through a tool or supplied source. A base model also has no calculator, browser, or Python interpreter unless the application provides those tools (seg 01, 02:31–03:07; 03:23–03:37; 04:28–05:02).</p>" },
+        { "heading": "How to use the mental model", "html": "<ol><li>Start a chat to open a fresh token sequence.</li><li>Give the model the relevant request; each turn becomes part of the shared context.</li><li>Remember that the answer is generated from learned patterns plus the current context, not retrieved from a perfect archive.</li><li>For current facts or exact computation, supply evidence or use an application tool that can retrieve or calculate.</li></ol><p>Popular facts are more likely to be represented well than rare details. Treat fluent delivery and a friendly persona as separate from factual reliability (seg 01, 05:57–06:09).</p>" },
+        { "heading": "Pitfalls", "html": "<ul><li>The “zip file” analogy does not mean exact recall; the learned representation is lossy and probabilistic.</li><li>A cutoff is structural: recent events may not be in the model's weights.</li><li>Do not assume the model itself can browse, calculate, or run code; tool access belongs to the surrounding application.</li><li>Assistant tone is a result of post-training, not evidence that an answer is correct.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "When we click new chat, we begin a token sequence.", "cite": "seg 01, 00:07" },
+        { "text": "Together, we are building out the token stream, which we also call the context window.", "cite": "seg 01, 00:38" },
+        { "text": "You're talking to a zip file.", "cite": "seg 01, 05:00" }
+      ],
+      "images": [
+        { "src": "media/frames/01_how_an_llm_chat_works/01_how_an_llm_chat_works_00m55s.jpg", "caption": "The conversation token stream is the model's working context.", "timestamp": "00:55" },
+        { "src": "media/frames/01_how_an_llm_chat_works/01_how_an_llm_chat_works_02m09s.jpg", "caption": "Pre-training compresses patterns from internet text into model parameters.", "timestamp": "02:09" },
+        { "src": "media/frames/01_how_an_llm_chat_works/01_how_an_llm_chat_works_04m37s.jpg", "caption": "A model without attached tools is self-contained.", "timestamp": "04:37" }
+      ],
+      "gifs": [
+        { "src": "media/gif/seg01_00m05s.gif", "caption": "A new chat begins a fresh token sequence." },
+        { "src": "media/gif/seg01_00m33s.gif", "caption": "Turns append to the shared conversation context." },
+        { "src": "media/gif/seg01_01m08s.gif", "caption": "Pre-training and post-training shape different parts of the model." }
+      ],
+      "pitfalls": ["The learned ‘zip file’ is lossy, not an exact archive.", "Stored knowledge can be out of date because training runs infrequently.", "The base model has no tools unless the application attaches them.", "A helpful assistant persona does not establish that an answer is true."],
+      "takeaways": ["A chat is a sequence of tokens appended by both sides.", "The context window is the model's working memory for the current exchange.", "Pre-training supplies learned patterns; post-training shapes assistant behavior.", "Use supplied sources and tools for information outside the model's reliable recall."],
+      "practice": ["Open a new chat and ask a question that depends on today's news; note whether the app uses a search tool or answers from memory.", "Ask the model to explain the difference between a context window and model training in its own words."]
+    },
+    {
+      "id": "02-knowledge-queries-trust", "segment": "02", "segmentKey": "02_knowledge_queries_trust", "chapter": "ch1", "number": 2, "title": "Knowledge queries & trust",
+      "summary": "A raw model is most useful for facts that are both not recent and extremely common online. Treat answers as fallible recollections and scale verification to the stakes.",
+      "objectives": ["Apply the talk's age-and-frequency test to a knowledge question.", "Explain why an answer from model weights is not a citation.", "Choose a primary source for checking a claim.", "Set verification effort in proportion to the consequences of error."],
+      "sections": [
+        { "heading": "The two-part test", "html": "<p>Before asking the model to answer from its learned knowledge, ask whether the information is <strong>not recent</strong> and <strong>extremely frequent on the internet</strong> (seg 02, 00:27–00:56). Karpathy illustrates this with a common caffeine question; the model gives an approximate answer from its weights without a search.</p><p>That answer is a probabilistic recollection, not a guarantee. Common facts are more likely to be represented well because the model encountered many references to them (seg 02, 01:01–01:21; 02:28–02:45).</p>" },
+        { "heading": "Verify against evidence", "html": "<p>When accuracy matters, compare the answer with a primary source. In the medicine example, Karpathy checked the ingredient list on the actual NyQuil box rather than relying on the model's confident description (seg 02, 02:16–02:27). The point is a process: use the answer as a lead, then inspect authoritative evidence yourself.</p><p>For low-stakes, common information, light checking may be enough. For high-stakes information, verify thoroughly; the model's fluency does not change the cost of being wrong (seg 02, 03:07–03:15).</p>" },
+        { "heading": "A practical trust checklist", "html": "<ol><li>Is the fact recent? If so, use a current source instead of relying on stored knowledge.</li><li>Is it common and widely discussed, or obscure and niche?</li><li>Ask for the basis of the answer, then verify important claims against a primary source.</li><li>For product ingredients or medical details, inspect the package or official information directly.</li><li>Spend more effort checking when the consequences of error are higher.</li></ol>" },
+        { "heading": "Pitfalls", "html": "<ul><li>“It said so” is not evidence; the model itself may be unsure or wrong.</li><li>Polish and confidence do not replace recency and frequency as clues to likely recall quality.</li><li>Do not skip verification of dosage, ingredient, or other consequential details.</li><li>Low stakes can justify lighter checking, but not treating every answer as guaranteed.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "I'm not guaranteed that this is the correct answer. This is just its vague recollection of the internet.", "cite": "seg 02, 01:01" },
+        { "text": "I actually took out the box and I looked at the ingredients and I made sure that NyQuil ingredients are exactly these ingredients.", "cite": "seg 02, 02:16" },
+        { "text": "This is just probabilistic statistical recollection of the internet.", "cite": "seg 02, 02:28" }
+      ],
+      "images": [
+        { "src": "media/frames/02_knowledge_queries_trust/02_knowledge_queries_trust_00m31s.jpg", "caption": "Check whether a fact is recent before relying on stored model knowledge.", "timestamp": "00:31" },
+        { "src": "media/frames/02_knowledge_queries_trust/02_knowledge_queries_trust_01m56s.jpg", "caption": "Compare consequential details with the source itself.", "timestamp": "01:56" },
+        { "src": "media/frames/02_knowledge_queries_trust/02_knowledge_queries_trust_03m10s.jpg", "caption": "Calibrate the amount of checking to the stakes.", "timestamp": "03:10" }
+      ],
+      "gifs": [
+        { "src": "media/gif/seg02_00m25s.gif", "caption": "Test whether a knowledge question is old and ubiquitous." },
+        { "src": "media/gif/seg02_02m05s.gif", "caption": "Verify details against the primary source." },
+        { "src": "media/gif/seg02_02m22s.gif", "caption": "Common information may be recalled well, but remains fallible." }
+      ],
+      "pitfalls": ["A model answer is not a source citation.", "Common, old information can still be misstated.", "Ingredient and medical claims need first-hand checking.", "Low stakes justify lighter verification, not blind trust."],
+      "takeaways": ["Use the raw model for old, widely represented facts.", "Think of answers as recollection rather than retrieval.", "Verify important claims against primary sources.", "Increase checking effort as stakes rise."],
+      "practice": ["Ask for a stable, common fact and a recent fact; identify which requires a current source.", "Choose a claim in an answer and find the official or primary source that could confirm it."]
+    },
+    {
+      "id": "03-new-chat-per-topic", "segment": "03", "segmentKey": "03_new_chat_per_topic", "chapter": "ch1", "number": 3, "title": "Start a new chat per topic",
+      "summary": "Treat conversation context as working memory with a cost. Starting fresh at topic changes removes irrelevant tokens that can distract the model and add computation.",
+      "objectives": ["Describe the two costs of a long, irrelevant context.", "Decide when a topic change calls for a fresh chat.", "Carry forward only material relevant to the next task.", "Recognize when related context should remain available."],
+      "sections": [
+        { "heading": "Context is a resource", "html": "<p>Karpathy's default is simple: when you switch topics, start a new chat (seg 03, 00:00–00:16). A new chat resets the context window to zero. That is useful when the old conversation no longer helps with the next question.</p><p>Accumulated tokens have an <strong>accuracy cost</strong>: irrelevant history can distract the model and reduce accuracy on later turns. They also have a <strong>compute cost</strong>: a larger window makes token generation slower and slightly more expensive (seg 03, 00:16–01:04).</p>" },
+        { "heading": "Keep useful context, discard stale context", "html": "<p>Think of the context window as working memory. Keep the current task's relevant facts and instructions; do not preserve a sprawling conversation merely because some detail might become useful someday. The practical goal is to keep context as short as you can, which Karpathy says can make a session faster and slightly better (seg 03, 01:04–01:21).</p><p>There is a clear exception: if prior information is genuinely related to the current task, leave it in context. A fresh chat is a hygiene rule for topic switches, not a demand to erase relevant background (seg 03, 01:21–01:31).</p>" },
+        { "heading": "How to apply the rule", "html": "<ol><li>Notice when the conversation has moved to a different subject.</li><li>Start a new chat for that subject.</li><li>Restate or paste only the context the new task needs.</li><li>Keep working in the existing chat when its history directly supports the task.</li></ol>" },
+        { "heading": "Pitfalls", "html": "<ul><li>Long context is not free: it can add distraction as well as latency and cost.</li><li>Do not keep one giant chat just in case; unused tokens are still present now.</li><li>Context clutter is described as a model behavior, not merely a user-interface inconvenience.</li><li>Do not remove relevant background that the current task depends on.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "Any time you are switching topic, I encourage you to always start a new chat.", "cite": "seg 03, 00:00" },
+        { "text": "think of the tokens in the context window as a precious resource.", "cite": "seg 03, 01:04" },
+        { "text": "keep it as short as you can. And you can expect that to work faster and slightly better.", "cite": "seg 03, 01:16" }
+      ],
+      "images": [
+        { "src": "media/frames/03_new_chat_per_topic/03_new_chat_per_topic_00m13s.jpg", "caption": "A fresh chat resets the context window.", "timestamp": "00:13" },
+        { "src": "media/frames/03_new_chat_per_topic/03_new_chat_per_topic_00m50s.jpg", "caption": "Stale tokens can distract later turns.", "timestamp": "00:50" },
+        { "src": "media/frames/03_new_chat_per_topic/03_new_chat_per_topic_01m22s.jpg", "caption": "Keep related information when it still serves the task.", "timestamp": "01:22" }
+      ],
+      "gifs": [
+        { "src": "media/gif/seg03_00m00s.gif", "caption": "Start fresh when the conversation changes topic." },
+        { "src": "media/gif/seg03_00m12s.gif", "caption": "A new chat clears the previous context." },
+        { "src": "media/gif/seg03_01m10s.gif", "caption": "A shorter context can be faster and more focused." }
+      ],
+      "pitfalls": ["Long context can reduce accuracy and increase generation cost.", "Keeping a chat open for hypothetical future use carries a present cost.", "Irrelevant context may distract the model on later turns.", "Prune only information that is not relevant to the current task."],
+      "takeaways": ["A new chat resets working context.", "Use a fresh chat when the subject changes.", "Carry over only the material needed for the new task.", "Retain relevant context when a task genuinely continues the prior one."],
+      "practice": ["Review a long chat and list which facts a new, unrelated question would actually need.", "Begin a fresh conversation for a different topic and compare the context you must restate."]
+    },
+    {
+      "id": "04-models-and-pricing-tiers", "segment": "04", "segmentKey": "04_models_and_pricing_tiers", "chapter": "ch1", "number": 4, "title": "Models & pricing tiers",
+      "summary": "Know which model and plan are answering before judging the result. Providers trade model capability against compute cost, and plans differ in included models, limits, and price.",
+      "objectives": ["Find and confirm the active model before a task.", "Explain why larger models may cost more.", "Compare plans using their included models and usage limits.", "Describe the ‘LLM council’ approach to comparing providers."],
+      "sections": [
+        { "heading": "Check the active model", "html": "<p>Karpathy's first habit is to check the model selector and know which model is responding (seg 04, 00:02–00:12). In his recording, a logged-out session could silently provide a smaller model without identifying it, so do not assume that the product name alone tells you which capability is active (seg 04, 00:24–00:48).</p><p>Model names and availability change. The talk's comparisons—such as GPT-4o, GPT-4o mini, Claude 3.5 Sonnet, Gemini, and Grok 3—describe the lineup at the time, not a current pricing guide.</p>" },
+        { "heading": "What tiers buy", "html": "<p>More capable models generally cost more to compute, which is why providers charge more for access to them (seg 04, 02:12–02:27). Plans can differ in the models included, message caps, and added features. Read the current plan details and fine print instead of relying on a remembered headline price.</p><p>Choose the most powerful model that works for your needs and budget. Casual use may be well served by a lower tier; professional use may justify paying for a stronger model if the added capability saves enough time (seg 04, 02:22–02:47).</p>" },
+        { "heading": "Compare answers", "html": "<p>Karpathy sometimes asks several models the same question and compares their responses, an approach he calls his “LLM council” (seg 04, 04:25–04:51). Use comparison to reveal differences in reasoning or suggestions; multiple answers do not automatically prove which one is correct.</p><ol><li>Confirm the model name.</li><li>Check the current plan's model access and usage limits.</li><li>Match the model tier to the task's difficulty and your budget.</li><li>For consequential facts, still verify against evidence.</li></ol>" },
+        { "heading": "Pitfalls", "html": "<ul><li>Do not assume a free or logged-out session is using the flagship model.</li><li>Names, tiers, prices, and limits in the talk are time-bound examples.</li><li>A higher price does not make every answer correct.</li><li>Agreement among models is not a substitute for checking a primary source.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "keep in mind what model you are actually using.", "cite": "seg 04, 00:02" },
+        { "text": "the bigger models are more expensive to calculate. And so therefore, the companies charge more for the bigger models.", "cite": "seg 04, 02:12" },
+        { "text": "I kind of refer to all these models as my LLM council.", "cite": "seg 04, 04:41" }
+      ],
+      "images": [
+        { "src": "media/frames/04_models_and_pricing_tiers/04_models_and_pricing_tiers_00m44s.jpg", "caption": "Check which model is active, especially in logged-out sessions.", "timestamp": "00:44" },
+        { "src": "media/frames/04_models_and_pricing_tiers/04_models_and_pricing_tiers_02m42s.jpg", "caption": "Match the plan and model capability to the work.", "timestamp": "02:42" },
+        { "src": "media/frames/04_models_and_pricing_tiers/04_models_and_pricing_tiers_04m25s.jpg", "caption": "Comparing providers can surface different responses.", "timestamp": "04:25" }
+      ],
+      "gifs": [],
+      "pitfalls": ["Do not assume the model selector is on the strongest option.", "The talk's provider lineup, prices, and plan limits may have changed.", "Paying more does not remove the need to verify answers.", "Several agreeing models do not replace primary evidence."],
+      "takeaways": ["Check the active model before interpreting an answer.", "Plans vary by model access, usage limits, and price.", "Choose capability in relation to task and budget.", "Compare models when useful, then verify important claims independently."],
+      "practice": ["In your preferred chat app, locate the active model and current plan limits.", "Ask two available models the same low-stakes question and compare how their answers differ."]
+    },
+    {
+      "id": "05-thinking-models", "segment": "05", "segmentKey": "05_thinking_models", "chapter": "ch1", "number": 5, "title": "Thinking models",
+      "summary": "Reasoning modes spend extra time deliberating before answering. Use them for tasks that benefit from additional effort, while accounting for latency and checking their output.",
+      "objectives": ["Describe how a thinking mode differs from an immediate response.", "Identify task types Karpathy associates with extended thinking.", "Choose when the extra time is worthwhile.", "Maintain verification even when a model presents a reasoning process."],
+      "sections": [
+        { "heading": "What thinking mode does", "html": "<p>Some models or modes deliberate before producing the final answer. The extra reasoning time can help on problems that need multiple steps, such as difficult math or coding (seg 05; see also seg 08, 00:58–01:27). It is a choice about spending more inference effort, not a guarantee of correctness.</p><p>Karpathy connects this “thinking” behavior to the thinking half of deep research, where the system searches and reasons over a longer run (seg 07, 00:37–00:45).</p>" },
+        { "heading": "When to spend the time", "html": "<p>Use a thinking mode when the task is complex enough that a quick response is unlikely to be sufficient. For a simple lookup or straightforward request, a slower mode may add little value. Consider both the task and the time available.</p><p>When comparing modes, give them the same problem and evaluate the usefulness and correctness of the result. If there is a verifiable answer, check it independently; extra deliberation is still generated model output.</p>" },
+        { "heading": "A practical workflow", "html": "<ol><li>Estimate whether the problem needs several reasoning steps.</li><li>Select a thinking or extended-thinking option for a hard math, coding, or analysis task.</li><li>Allow for the added wait.</li><li>Inspect the final result and test it against a known answer, source, or execution environment when possible.</li></ol>" },
+        { "heading": "Pitfalls", "html": "<ul><li>Do not assume a longer wait means the result must be correct.</li><li>Do not spend extra time on tasks that need only a simple response.</li><li>A displayed reasoning process does not replace independent verification.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "in the process of reinforcement learning, the model discovers thinking strategies that lead to good outcomes.", "cite": "seg 05, 00:27" },
+        { "text": "So the model will try out different ideas. It will backtrack. It will revisit assumptions.", "cite": "seg 05, 00:40" },
+        { "text": "There exists a class of models that we call thinking models.", "cite": "seg 05, 06:49" }
+      ],
+      "images": [
+        { "src": "media/frames/05_thinking_models/05_thinking_models_01m13s.jpg", "caption": "Thinking modes spend additional time before responding.", "timestamp": "01:13" },
+        { "src": "media/frames/05_thinking_models/05_thinking_models_04m27s.jpg", "caption": "Reserve extended deliberation for tasks that benefit from it.", "timestamp": "04:27" },
+        { "src": "media/frames/05_thinking_models/05_thinking_models_07m17s.jpg", "caption": "A longer process still calls for checking the result.", "timestamp": "07:17" }
+      ],
+      "gifs": [],
+      "pitfalls": ["Deliberation can take longer without guaranteeing correctness.", "A thinking mode may be unnecessary for simple requests.", "Reasoning output should be checked against evidence or execution where possible."],
+      "takeaways": ["Thinking modes trade time for additional model deliberation.", "They are most useful for harder multi-step tasks.", "Choose the mode based on task complexity and wait tolerance.", "Verify the answer even after extended reasoning."],
+      "practice": ["Give a simple and a multi-step problem to normal and thinking modes; compare time and useful differences.", "Check a reasoning-mode answer with a calculator, source, or runnable example."]
+    },
+    {
+      "id": "06-internet-search-tool", "segment": "06", "segmentKey": "06_internet_search_tool", "chapter": "ch2", "number": 6, "title": "The internet search tool",
+      "summary": "Search adds current web material to the model's context. The application searches, loads fetched pages as text, and lets the model resume answering with that evidence.",
+      "objectives": ["Trace how a search result reaches the model's context.", "Recognize when a query calls for web search.", "Ask for evidence-backed answers from current sources.", "Verify that citations support the claims they accompany."],
+      "sections": [
+        { "heading": "How search changes the chat", "html": "<p>An LLM by itself is a self-contained model with a cutoff. With a search tool, the application can stop generation, search the web, fetch pages, load their text into the context window, and let the model continue answering from that material (seg 06, 01:50–02:07). The fetched pages become part of the working context, alongside the conversation.</p><p>Search is useful for facts that are recent, changing, or niche—areas where stored knowledge may be missing or unreliable (seg 06).</p>" },
+        { "heading": "Use search deliberately", "html": "<p>Tell the assistant when the answer must be current and ask it to use search. Then inspect the cited pages yourself, especially when the result affects an important decision. Search can retrieve evidence, but the model can still misread a page or make an unsupported claim.</p><ol><li>State what needs to be current or sourced.</li><li>Ask the model to search and summarize the relevant pages.</li><li>Open citations and confirm they support the specific claim.</li></ol>" },
+        { "heading": "Pitfalls", "html": "<ul><li>Do not treat a search icon as proof that every answer was grounded in sources.</li><li>A citation can be present while a claim is inaccurate or unsupported.</li><li>Search results may be incomplete; inspect the underlying page and its context.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "It's inert, it's closed off, it's got no tools. It's just a neural network that can emit tokens.", "cite": "seg 06, 00:15-00:20" },
+        { "text": "when the model emits the search the internet token, the chat GPT application… will stop sampling from the model and it will take the query that the model gave, it goes off, it does a search, it visits web pages", "cite": "seg 06, 01:50-02:07" },
+        { "text": "you can actually visit those web pages yourself and you can make sure that these are not hallucinations from the model", "cite": "seg 06, 04:26-04:31" }
+      ],
+      "images": [], "gifs": [],
+      "pitfalls": ["Search results are material to inspect, not automatic proof.", "Citations can accompany hallucinated or misinterpreted claims.", "Search may not retrieve every useful source."],
+      "takeaways": ["Search can bring information newer than model training into context.", "Fetched pages are returned as text for the model to use.", "Ask explicitly for search when recency matters.", "Open citations and check the supporting passage."],
+      "practice": ["Ask a current question and request web search; open a citation and find the exact passage supporting one claim.", "Compare a search-grounded answer with a memory-only answer to a stable fact."]
+    },
+    {
+      "id": "07-deep-research", "segment": "07", "segmentKey": "07_deep_research", "chapter": "ch2", "number": 7, "title": "Deep research",
+      "summary": "Deep research combines repeated internet search with extended reasoning to produce a cited, report-length answer. Its duration and citations do not remove the need to check sources and figures.",
+      "objectives": ["Explain the combination of search and thinking in deep research.", "Choose a research question suited to a long-running report.", "Check whether report citations support their claims.", "Identify inconsistencies in tables, calculations, and prose."],
+      "sections": [
+        { "heading": "What it is for", "html": "<p>Karpathy describes deep research as internet search combined with thinking, running for a long time. It can spend tens of minutes collecting and synthesizing material into a cited, research-paper-like report (seg 07, 00:37–00:45). Use it when a question needs multiple sources and a substantial synthesis rather than a quick lookup.</p>" },
+        { "heading": "Review the report as a draft", "html": "<p>Citations make a report easier to inspect, but they do not guarantee that claims are correct. Karpathy found a table of US LLM labs where the report had incorrect material despite citations; his point is to verify the sources and the details (seg 07, 06:25–07:01). Check whether a cited source actually supports the adjacent statement, and independently recalculate figures when needed.</p><p>Use the report as a research starting point: follow the sources, look for contradictions, and distinguish sourced facts from the model's synthesis.</p>" },
+        { "heading": "Workflow", "html": "<ol><li>Write a focused question that benefits from several sources.</li><li>Ask deep research for a cited synthesis.</li><li>Review the report's structure, source list, and claims.</li><li>Open citations for important statements and check figures against their source.</li><li>Revise or narrow the question where the sources disagree or leave gaps.</li></ol>" },
+        { "heading": "Pitfalls", "html": "<ul><li>A long research run can still produce incorrect claims.</li><li>Citations do not guarantee that a table or number is accurate.</li><li>Do not accept a report without checking whether its sources support the claims.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "Deep Research is a combination of internet search and thinking and rolled out for a long time.", "cite": "seg 07, 00:37-00:45" },
+        { "text": "So this is not a simple and short response. This is kind of like almost like a custom research paper on any topic you would like.", "cite": "seg 07, 04:49-04:55" },
+        { "text": "Treat this as your first draft. Treat this as papers to look at. But don't take this as definitely true.", "cite": "seg 07, 06:44-06:51" }
+      ],
+      "images": [], "gifs": [],
+      "pitfalls": ["Long runtime does not ensure accuracy.", "Citations can be attached to a faulty claim or table.", "Synthesis may blur source statements and model interpretation."],
+      "takeaways": ["Deep research combines search and extended reasoning.", "It suits multi-source questions that need report-length synthesis.", "Citations make checking possible but do not make checking optional.", "Verify figures and tables against underlying sources."],
+      "practice": ["Request a short cited research report on a topic you know; inspect whether two citations support their claims.", "Check one table entry against its source and note any mismatch."]
+    },
+    {
+      "id": "08-file-uploads-papers-books", "segment": "08", "segmentKey": "08_file_uploads_papers_books", "chapter": "ch2", "number": 8, "title": "File uploads: papers & books",
+      "summary": "Supplying a paper or chapter puts concrete text into the model's context so it can answer from the source rather than hazy memory. Co-read actively, because summaries can miss details and large files can exceed limits.",
+      "objectives": ["Explain how uploaded document text enters context.", "Set up an LLM-assisted reading session around a supplied source.", "Recognize likely limits around figures and large files.", "Check the model's interpretation against the original text."],
+      "sections": [
+        { "heading": "Bring the source into the conversation", "html": "<p>Instead of asking a model to recall a book or paper from training, provide the actual text. The application converts an uploaded PDF to text and loads that content into the token window; pasting a chapter can serve the same purpose (seg 08, 02:43–02:47). The supplied source gives the model something concrete to reference in the current conversation.</p><p>Karpathy describes using an LLM as a reading partner: start with a summary, then work through sections and ask questions where you get stuck. He says the approach improves his retention and understanding (seg 08, 04:22–04:30; 07:00–07:08).</p>" },
+        { "heading": "Co-read rather than delegate", "html": "<ol><li>Upload a paper or paste the chapter text.</li><li>Tell the model which work and section it is reading, then ask for an initial summary.</li><li>Read one section at a time and ask questions when something is unclear.</li><li>Compare explanations and summaries with the original passage.</li></ol><p>Document text is not the same as perfect access to every page feature. Karpathy expects figures in PDFs may be dropped or poorly understood, and a large PDF can hit a chat length limit (seg 08, 02:19–02:42; 03:15–03:22). Treat those as practical constraints and check the source directly.</p>" },
+        { "heading": "Pitfalls", "html": "<ul><li>Do not ask for detailed chapter facts from memory alone when you can provide the text.</li><li>Figures and images may not survive document ingestion as usable evidence.</li><li>Large documents may exceed the model or chat's length limit.</li><li>A summary can be wrong; use the original passage as the authority.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "we are providing the LLM with additional concrete documents that it can reference inside its context window.", "cite": "seg 08, 00:18-00:23" },
+        { "text": "this PDF is basically converted to a text file. And that text file is loaded into the token window.", "cite": "seg 08, 02:43-02:47" },
+        { "text": "I encourage you to experiment with it, and don't read books alone.", "cite": "seg 08, 08:19-08:21" }
+      ],
+      "images": [], "gifs": [],
+      "pitfalls": ["The model's learned memory of a particular book may be hazy.", "Uploaded PDFs may lose figures or images in text extraction.", "Large files can exceed chat length limits.", "Do not delegate the entire reading; cross-check explanations with source text."],
+      "takeaways": ["An uploaded or pasted source adds concrete material to context.", "Begin with a summary, then read and question section by section.", "Ask about the passage where confusion occurs.", "Check the model's interpretation against the source itself."],
+      "practice": ["Paste a short public-domain passage and ask for a summary plus three questions the passage answers.", "Ask a follow-up about one sentence, then confirm the response against that sentence."]
+    },
+    {
+      "id": "09-python-interpreter", "segment": "09", "segmentKey": "09_python_interpreter", "chapter": "ch2", "number": 9, "title": "The Python interpreter",
+      "summary": "When a problem exceeds direct pattern completion, an LLM can write a program for an attached interpreter, receive the result, and explain it. Tool access varies between models, so verify calculations rather than trusting plausible answers.",
+      "objectives": ["Describe the model-to-interpreter-to-model tool loop.", "Distinguish simple arithmetic from calculation delegated to code.", "Check whether a model has an execution tool available.", "Verify close-but-wrong arithmetic independently."],
+      "sections": [
+        { "heading": "A tool-use loop", "html": "<p>Instead of answering directly, the model can emit a program for the application to run. The model pauses, the Python interpreter executes the code, and the result returns to the model as text for a final response (seg 09, 00:12–00:33; 02:26–02:44). Python is one possible language; Claude's example used JavaScript for calculation (seg 09, 04:20–04:29).</p><p>Simple arithmetic may be answered through learned pattern completion. Harder multiplication can reveal when a model uses code; the talk compares ChatGPT's interpreter with other models that attempt the calculation “in its head” (seg 09, 01:11–02:44).</p>" },
+        { "heading": "Check for execution", "html": "<p>Tool availability differs by product and model. A model without a code interpreter can still produce a plausible number, including one that is close but wrong. Karpathy's comparison includes examples from Grok 3 and Gemini 2.0 Pro where the observed response did not show tool use and arithmetic failed on harder problems (seg 09, 03:22–05:14).</p><ol><li>Use a task difficult enough to distinguish calculation from a memorized pattern.</li><li>Ask the model to show or run code if the application supports it.</li><li>Check the result with a calculator or another reliable method.</li></ol>" },
+        { "heading": "Pitfalls", "html": "<ul><li>Do not assume every model has the same tools.</li><li>Pattern completion is not reliable arithmetic, even when the result looks plausible.</li><li>A close answer can still be wrong; independently check calculations.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "instead of the LLM giving you an answer directly, it has the ability now to write a computer program", "cite": "seg 09, 00:12" },
+        { "text": "It's actually not really doing math. It's actually more like almost memory work", "cite": "seg 09, 01:18" },
+        { "text": "if they don't have the tools available, they'll just do their best, which means that they might hallucinate a result for you.", "cite": "seg 09, 05:28" }
+      ],
+      "images": [], "gifs": [],
+      "pitfalls": ["In-head arithmetic is pattern completion, not dependable computation.", "Tool availability varies across models.", "Close-looking outputs can still contain arithmetic errors."],
+      "takeaways": ["An application can run model-written code and feed the result back.", "The model pauses during tool execution and resumes with the returned output.", "Different models have different execution tools.", "Verify arithmetic with an independent calculator or program."],
+      "practice": ["Ask a model to multiply two large numbers; see whether it invokes a code tool and check the result on a calculator.", "Repeat with a second model and compare tool availability and accuracy."]
+    },
+    {
+      "id": "10-advanced-data-analysis", "segment": "10", "segmentKey": "10_advanced_data_analysis", "chapter": "ch2", "number": 10, "title": "Advanced Data Analysis",
+      "summary": "Advanced Data Analysis can gather data, run code, plot results, and fit trends like a junior analyst. The talk's demo shows why you should inspect missing-data assumptions, generated code, and whether prose agrees with computed output.",
+      "objectives": ["Outline an end-to-end data analysis workflow with search and code.", "Spot silent substitutions for missing values.", "Compare narrative results with computed variables or plots.", "Explain why reading generated code matters."],
+      "sections": [
+        { "heading": "A collaborative analysis workflow", "html": "<p>Karpathy describes Advanced Data Analysis as working with a junior data analyst: it can gather data, produce plots, fit curves, and extrapolate trends (seg 10, 00:04–00:19). In the demo, he explicitly asked ChatGPT to search for OpenAI valuation data, requested a table, then asked it to plot the values on a log scale (seg 10, 00:28–01:06).</p><ol><li>Ask for sourced data and specify that search should be used.</li><li>Inspect the resulting table, including missing entries.</li><li>Ask for the plot or analysis and examine the generated code.</li><li>Check computed results before drawing conclusions.</li></ol>" },
+        { "heading": "Audit assumptions and output", "html": "<p>The demo's code silently replaced a 2015 “NA” valuation with 0.1, or $100 million, without explaining that assumption (seg 10, 01:32–01:46). In a later extrapolation, the prose answer said about $1.7 trillion while the plot label implied roughly $20 trillion. Asking it to print the variable exposed the discrepancy (seg 10, 02:29–03:24).</p><p>Read generated code to see how missing data is handled. For fitted trends, compare the narrative with the actual computed variable and remember that extrapolations depend on the chosen fit (seg 10, 02:12–02:29).</p>" },
+        { "heading": "Pitfalls", "html": "<ul><li>Missing values may be silently replaced with an assumption.</li><li>The prose answer can contradict a plot, label, or computed variable.</li><li>A trendline extrapolation depends on the selected fit and data.</li><li>If you cannot inspect the code, these failure modes are harder to catch.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "it's kind of like did it without telling us. So it's a little bit sneaky.", "cite": "seg 10, 01:45" },
+        { "text": "I would be hesitant to potentially recommend the use of these tools if people aren't able to like read it and verify it a little bit for themselves.", "cite": "seg 10, 01:54" },
+        { "text": "So a lot of promise but be careful.", "cite": "seg 10, 04:26" }
+      ],
+      "images": [], "gifs": [],
+      "pitfalls": ["NA values may be silently converted into numbers.", "A written result may disagree with the code's computed output.", "Extrapolations rely on assumptions about the chosen fit.", "Without code review, hidden choices are easy to miss."],
+      "takeaways": ["Ask explicitly for search when collecting current data.", "Inspect tables for missing values before analysis.", "Read code to find substitutions and assumptions.", "Cross-check prose, plots, labels, and printed variables."],
+      "practice": ["Give a small table with one missing value to a data-analysis tool and inspect how it handles the gap.", "Ask it for a calculation and a plot, then compare the prose answer to the underlying output."]
+    },
+    {
+      "id": "11-claude-artifacts-diagrams", "segment": "11", "segmentKey": "11_claude_artifacts_diagrams", "chapter": "ch2", "number": 11, "title": "Claude Artifacts & diagrams",
+      "summary": "Claude Artifacts can turn supplied material into a small browser app, such as a flashcard tool, while Mermaid can render a conceptual diagram. These are useful bespoke aids with frontend-only limits.",
+      "objectives": ["Explain how an Artifact turns generated code into a browser interface.", "Create a flashcard app from supplied study material.", "Ask for a Mermaid conceptual diagram of a source.", "Recognize the frontend-only and persistence limits described in the talk."],
+      "sections": [
+        { "heading": "Custom apps in the conversation", "html": "<p>Claude Artifacts let the model write code, such as a React component, that Claude's interface runs in the browser (seg 11, 00:17–00:34). Karpathy's flashcard demo starts with pasted text about Adam Smith, generates questions and answers, then asks Claude to build an app where the learner can reveal answers, mark them right or wrong, reset, and shuffle (seg 11, 00:27–01:59).</p><p>The shift is from configuring a general-purpose app to asking for a small, bespoke tool tailored to the material at hand (seg 11, 02:07–02:30).</p>" },
+        { "heading": "Use diagrams to understand", "html": "<p>Karpathy's most valuable Artifact use is conceptual diagram generation. Provide a chapter and ask for a conceptual diagram; Claude can write Mermaid definitions and render a graph of the ideas (seg 11, 03:06–03:44). A tree-like layout can make a chapter's argument easier to remember, and the same approach can be used for books, chapters, or source code (seg 11, 04:33–04:56).</p><ol><li>Supply source material in the conversation.</li><li>Request a diagram of the relationships or argument, not just a list of terms.</li><li>Inspect the rendered graph and correct relationships that do not match the source.</li></ol>" },
+        { "heading": "Limits and pitfalls", "html": "<p>Artifacts are browser-side, frontend-only apps in the described workflow; Karpathy notes there is no backend or database (seg 11, 02:30–02:41). Treat them as one-off learning tools, not as persistent services. He also says he is not a daily Artifact user; his endorsement is specifically strongest for diagrams.</p><ul><li>Do not assume a generated Artifact has server-side storage.</li><li>Check flashcards and diagrams against the supplied text.</li><li>Generated code and rendered relationships can still contain mistakes.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "Claude just writes the app just for you and deploys it here in your browser.", "cite": "seg 11, 02:24" },
+        { "text": "There's none of that here. There's no database or anything like that.", "cite": "seg 11, 02:35" },
+        { "text": "the one use case that I did find very useful in my own work is basically the use of diagrams, diagram generation.", "cite": "seg 11, 03:06" }
+      ],
+      "images": [], "gifs": [],
+      "pitfalls": ["Artifacts described here are frontend-only, with no backend or database.", "Do not assume study progress persists between sessions.", "Verify flashcards and diagram relationships against the source.", "Karpathy's endorsement is particularly about diagrams, not daily app use."],
+      "takeaways": ["Artifacts can make generated code run inside the browser interface.", "A supplied text can become a bespoke flashcard app.", "Mermaid diagrams can map conceptual relationships in source material.", "Check generated learning tools against the original source."],
+      "practice": ["Paste a short text and ask Claude to make a flashcard Artifact; test whether each answer matches the source.", "Ask for a Mermaid concept diagram of a chapter and mark one relationship to verify." ]
+    },
+    {
+      "id": "12-cursor-vibe-coding", "segment": "12", "segmentKey": "12_cursor_vibe_coding", "chapter": "ch2", "number": 12, "title": "Cursor & vibe coding",
+      "summary": "A coding agent in a desktop editor can work across a real project because it sees the file tree and can run commands. Vibe coding can accelerate iteration, but you remain responsible for inspecting changes, confirming risky commands, and testing the result.",
+      "objectives": ["Distinguish project-aware coding tools from web-chat code snippets.", "Describe Composer's multi-file agent workflow.", "Define vibe coding as Karpathy uses the term.", "Identify review, command-confirmation, and manual fallback practices."],
+      "sections": [
+        { "heading": "Work in the project context", "html": "<p>For professional coding, Karpathy says ordinary web chat lacks the context of the user's codebase. Dedicated desktop editors such as VS Code, Windsurf, and Cursor can reference files on disk and edit them in place (seg 12, 00:28–01:22). In the talk, Cursor calls Claude 3.7 Sonnet through Anthropic's API (seg 12, 01:28–01:55); treat those product details as recording-era context.</p>" },
+        { "heading": "Composer and vibe coding", "html": "<p>Cursor's Composer feature is described as an autonomous agent on the codebase: it can execute commands and change multiple files. In the demo, Karpathy asks it to scaffold a React tic-tac-toe app, then iterates with plain-language requests such as adding confetti when a player wins (seg 12, 02:03–02:52; 03:58–04:07).</p><p>Karpathy calls handing control to Composer, telling it what to do, and hoping it works “vibe coding” (seg 12, 04:16–04:28). That speed is useful, but the phrase captures the uncertainty: he says he is not keeping full track of every edit as it happens.</p>" },
+        { "heading": "Keep the work reviewable", "html": "<ol><li>Open a project directory in the coding editor.</li><li>Describe the desired change clearly and let the agent work on the project files.</li><li>Review diffs and run the application to verify behavior.</li><li>Read commands before confirming them, especially when they create or download assets.</li><li>Keep good checkpoints; if the agent gets stuck, edit the local files manually.</li></ol><p>The demo even adds a sound from a URL whose provenance Karpathy does not know. Inspect dependencies and assets rather than assuming generated additions are trustworthy (seg 12, 08:04–08:14).</p>" },
+        { "heading": "Pitfalls", "html": "<ul><li>“Hoping it works” is not a substitute for reviewing edits and testing the application.</li><li>Do not blindly approve commands that the agent pauses to confirm.</li><li>Generated dependencies and downloaded assets may have unclear provenance.</li><li>Keep the ability to inspect and modify the files yourself.</li></ul>" }
+      ],
+      "quotes": [
+        { "text": "the composer is like an autonomous agent on your code base, it will execute commands, it will change all the files as it needs to", "cite": "seg 12, 03:58-04:07" },
+        { "text": "vibe coding just refers to letting giving in giving control to composer and just telling it what to do, and hoping that it works.", "cite": "seg 12, 04:16-04:28" },
+        { "text": "worst comes to worst if we can't debug anything, we can always fall back to standard programming.", "cite": "seg 12, 08:26" }
+      ],
+      "images": [], "gifs": [],
+      "pitfalls": ["Project-aware agents can make broad multi-file changes that need review.", "Do not blindly confirm commands when the tool pauses for approval.", "Downloaded asset provenance may be unknown.", "Vibe coding still requires running, inspecting, and validating the result."],
+      "takeaways": ["A coding editor can expose the project's file tree to an agent.", "Composer can run commands and edit multiple files from plain-language instructions.", "Review diffs and test the running application after changes.", "Manual programming remains a fallback because project files are local."],
+      "practice": ["In a throwaway project, ask a coding agent for one small UI change; inspect the diff and run it.", "Before accepting an agent-suggested command or asset, read what it does and where the asset comes from."]
+    }
+  ],
+  "glossary": [
+    { "term": "LLM (large language model)", "definition": "A neural network trained to emit tokens; as Karpathy puts it, it is inert and has no tools until the application gives it some.", "cite": "seg 06, 00:15-00:20" },
+    { "term": "Context window", "definition": "The token window holding the current conversation and material supplied or fetched for the model to use as working memory.", "cite": "seg 06, 01:39-02:44" },
+    { "term": "Working memory", "definition": "The current context window: conversation tokens and loaded information directly available to the model during the exchange.", "cite": "seg 01, 00:38-00:54" },
+    { "term": "Token stream", "definition": "The one-dimensional sequence of tokens that user and model build turn by turn in a chat.", "cite": "seg 01, 00:07-00:38" },
+    { "term": "Pre-training", "definition": "Training on internet text through next-token prediction, compressing learned patterns into model parameters.", "cite": "seg 01, 01:13-02:29" },
+    { "term": "Post-training", "definition": "Training with human-built conversations that shapes the model into an assistant persona.", "cite": "seg 01, 03:40-04:24" },
+    { "term": "Knowledge cutoff", "definition": "The limit on how current the model's stored training knowledge can be; later information must be supplied or retrieved.", "cite": "seg 01, 02:31-03:07" },
+    { "term": "Hallucination", "definition": "A fabricated or incorrect output that can sound plausible, including claims accompanied by citations.", "cite": "seg 07, 06:29-06:38" },
+    { "term": "Tool use", "definition": "The model emits special tokens requesting an action, the application runs a tool, and the result returns as text in context.", "cite": "seg 06, 01:50-02:07" },
+    { "term": "Internet search tool", "definition": "An application capability that searches the web, loads fetched pages into context, and lets the model continue its answer.", "cite": "seg 06, 01:50-02:07" },
+    { "term": "Deep research", "definition": "A long-running combination of internet search and thinking that produces a cited, report-length synthesis.", "cite": "seg 07, 00:37-00:45" },
+    { "term": "Thinking / extended thinking model", "definition": "A model or mode that deliberates before answering; the talk describes normal and extended options and associates extra thinking with harder tasks.", "cite": "seg 08, 00:58-01:27" },
+    { "term": "Primary source", "definition": "The original or authoritative source used to check a claim, such as the product box Karpathy compared with an answer.", "cite": "seg 02, 02:16-02:27" },
+    { "term": "Python interpreter", "definition": "A code execution tool that runs a program written by the model and returns its output to the conversation.", "cite": "seg 09, 02:26-02:44" },
+    { "term": "Advanced Data Analysis", "definition": "A ChatGPT feature that lets the model gather data, run analysis code, plot results, and fit or extrapolate trends.", "cite": "seg 10, 00:04-00:19" },
+    { "term": "Artifact", "definition": "A Claude feature in which the model writes code, such as a React app, that the interface runs in the browser.", "cite": "seg 11, 00:17-00:34" },
+    { "term": "Mermaid", "definition": "A diagram library whose text definitions Claude can generate and render as conceptual graphs.", "cite": "seg 11, 03:37-03:44" },
+    { "term": "Composer", "definition": "Cursor's autonomous coding agent that can execute commands and edit multiple files in a project.", "cite": "seg 12, 03:58-04:07" },
+    { "term": "Vibe coding", "definition": "Karpathy's phrase for giving control to Composer, describing the desired outcome, and hoping the agent's changes work.", "cite": "seg 12, 04:16-04:28" },
+    { "term": "LLM council", "definition": "Karpathy's informal name for asking several language models the same question and comparing their answers.", "cite": "seg 04, 04:41" }
+  ]
+}

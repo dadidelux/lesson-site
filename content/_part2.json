@@ -1,0 +1,192 @@
+{
+  "chapters": [
+    { "id": "ch3", "number": 3, "title": "Multimodal: Voice, Vision, and Video", "tagline": "Voice, vision, and video bring new kinds of input and output to the same underlying language-model workflow.", "lessonIds": ["13-voice-input-output", "14-advanced-voice-mode", "15-notebooklm-podcasts", "16-image-input", "17-image-output", "18-video-input", "19-video-generation"] },
+    { "id": "ch4", "number": 4, "title": "Memory & Personalization", "tagline": "Persistent memory, global instructions, and reusable GPTs make an assistant more personal and useful over time.", "lessonIds": ["20-chatgpt-memory", "21-custom-instructions", "22-custom-gpts"] },
+    { "id": "ch5", "number": 5, "title": "Closing", "tagline": "Recap of the talk's core guidance", "lessonIds": ["23-summary"] }
+  ],
+  "lessons": [
+    {
+      "id": "13-voice-input-output", "segment": "13", "segmentKey": "13_voice_input_output", "chapter": "ch3", "number": 13, "title": "Voice input & output",
+      "summary": "Speech-to-text dictation and text-to-speech read-aloud make ordinary text chats faster to use. Voice here is a wrapper around a text LLM, distinct from native audio conversation.",
+      "objectives": ["Distinguish dictation from voice mode", "Use mobile dictation or system-wide desktop dictation", "Use read-aloud or system text-to-speech", "Recognize when technical terms should be typed"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Voice input converts speech to text before the text reaches the model; voice output reads the model's text response aloud. Text remains in the middle, so these tools make a text chat easier to operate rather than making the model audio-native.</p>" },
+        { "heading": "Why it matters", "html": "<p>Speaking is often quicker than typing, especially on a phone. Karpathy reports using speech for about half of his desktop queries and roughly 80% of his mobile queries.</p>" },
+        { "heading": "How to use it", "html": "<p>On mobile, use the microphone dictation control to put a transcript in the text box. On desktop, a system-wide dictation app can send text to whichever field is focused. For answers, use the app's read-aloud control or a system text-to-speech tool.</p><p>Type product names, library names, and code identifiers yourself when transcription accuracy matters.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>Dictation is not the same as native audio conversation.</li><li>Speech recognition can garble proper nouns and technical identifiers.</li><li>Read-aloud availability differs between apps.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Try dictating a routine question, review the transcript before sending, and compare the time with typing. Then listen to a longer response with read-aloud.</p>" }
+      ],
+      "quotes": [{ "text": "the big takeaway here is don't type stuff out. Use voice. It works quite well and I use this pervasively", "cite": "seg 13, 05:00-05:08" }],
+      "images": [{ "src": "media/frames/13_voice_input_output/13_voice_input_output_00m47s.jpg", "caption": "Karpathy describes how often he uses spoken queries.", "timestamp": "00:47" }, { "src": "media/frames/13_voice_input_output/13_voice_input_output_01m51s.jpg", "caption": "Mobile dictation turns speech into editable text.", "timestamp": "01:51" }, { "src": "media/frames/13_voice_input_output/13_voice_input_output_04m45s.jpg", "caption": "Read-aloud sends a text response through speech synthesis.", "timestamp": "04:45" }],
+      "gifs": [], "pitfalls": ["Confusing dictation with native audio mode", "Trusting transcription of technical names without checking", "Assuming every chat app has read-aloud"],
+      "takeaways": ["Dictation is speech-to-text feeding a text model.", "Use voice when it is faster than typing.", "Review transcripts, especially names and code terms.", "Read-aloud is text-to-speech and may be app-specific."],
+      "practice": ["Dictate a question on your phone, inspect its transcript, and correct any errors before sending.", "Try a system-wide dictation hotkey in a desktop text field, then listen to the answer with read-aloud."]
+    },
+    {
+      "id": "14-advanced-voice-mode", "segment": "14", "segmentKey": "14_advanced_voice_mode", "chapter": "ch3", "number": 14, "title": "Advanced voice mode",
+      "summary": "Native audio models process audio tokens directly instead of placing speech-to-text and text-to-speech around a text model. Advanced voice can handle expressive speech, though behavior and availability vary.",
+      "objectives": ["Explain the difference between wrapped and native audio", "Understand that audio tokens are the exchange medium", "Try expressive voice interactions", "Account for refusals and changing availability"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>In the talk's model, audio is represented as chunks of audio tokens and handled inside the language model. This differs from dictation, where speech is transcribed to text, and read-aloud, where text is synthesized into speech.</p>" },
+        { "heading": "Why it matters", "html": "<p>Direct audio input and output can preserve qualities such as voice and prosody without text as the intermediate exchange. A transcript shown in the interface may be generated afterward rather than being the actual conversation medium.</p>" },
+        { "heading": "How to use it", "html": "<p>Choose the app's voice conversation control, which is distinct from its dictation microphone. Experiment with storytelling, speaking style, or a spoken explanation, and check the current app and account tier for access.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>A displayed transcript does not prove that text was the real-time medium.</li><li>Voice modes can refuse some requests inconsistently.</li><li>Feature availability and plan limits change over time.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Ask voice mode to explain a familiar topic aloud, then request a different speaking style. Treat the result as an interaction experiment, not a reliable test of every capability.</p>" }
+      ],
+      "quotes": [{ "text": "the voice is handled natively inside the language model... it can hear and speak directly in audio. There's no text involved whatsoever.", "cite": "seg 14, 01:38-01:54" }, { "text": "this text is after the audio. What actually was happening is there were audio tokens going back and forth", "cite": "seg 14, 04:45-04:51" }],
+      "images": [{ "src": "media/frames/14_advanced_voice_mode/14_advanced_voice_mode_01m27s.jpg", "caption": "Advanced voice is presented as audio handled within the model.", "timestamp": "01:27" }, { "src": "media/frames/14_advanced_voice_mode/14_advanced_voice_mode_03m23s.jpg", "caption": "A demonstration of expressive spoken output.", "timestamp": "03:23" }, { "src": "media/frames/14_advanced_voice_mode/14_advanced_voice_mode_05m20s.jpg", "caption": "Karpathy discusses the mode's limitations.", "timestamp": "05:20" }],
+      "gifs": [], "pitfalls": ["Treating a post-hoc transcript as the live exchange format", "Expecting every request to be fulfilled", "Relying on old plan or rollout information"],
+      "takeaways": ["Native audio models work with audio tokens directly.", "Dictation and read-aloud still route through text.", "Voice can add expressive, conversational interaction.", "Check current availability and expect occasional refusals."],
+      "practice": ["Compare dictation-plus-read-aloud with a native voice conversation for the same simple task.", "Ask voice mode to tell a short story in two different styles and note where it succeeds or refuses."]
+    },
+    {
+      "id": "15-notebooklm-podcasts", "segment": "15", "segmentKey": "15_notebooklm_podcasts", "chapter": "ch3", "number": 15, "title": "NotebookLM podcasts",
+      "summary": "NotebookLM lets you add source material, ask grounded questions, and generate a podcast-style discussion about those sources. Karpathy presents it as a way to explore niche material during passive listening.",
+      "objectives": ["Add documents or web sources to a notebook", "Ask questions grounded in provided material", "Generate and customize a deep-dive podcast", "Use generated audio as an introduction rather than a definitive reference"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>NotebookLM places uploaded or linked sources into a notebook for chat and audio generation. Its deep-dive podcast feature creates a spoken discussion based on the notebook's material.</p>" },
+        { "heading": "Why it matters", "html": "<p>A dense paper or niche subject can become something to listen to on a walk or drive, especially when no human-made podcast covers it. The same notebook also supports direct questions about its sources.</p>" },
+        { "heading": "How to use it", "html": "<p>Create a notebook, add PDFs, web pages, or text, and ask questions about them. Use the podcast generation control to produce an audio overview; add special instructions to focus on an angle, regenerate, or use interactive mode to ask a question while listening.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>Generation can take several minutes.</li><li>A generated overview is a convenient introduction, not expert verification.</li><li>Its usefulness is strongest for material you provide and niche topics that lack existing coverage.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Add one paper you want to understand, ask a source-grounded question, then generate a podcast with an instruction to explain the paper's central claim and evidence.</p>" }
+      ],
+      "quotes": [{ "text": "once you put this here, this enters the context window of the model", "cite": "seg 15, 00:29-00:34" }, { "text": "It's kind of like an AI podcast about any arbitrary niche topic you'd like.", "cite": "seg 15, 02:22-02:25" }],
+      "images": [{ "src": "media/frames/15_notebooklm_podcasts/15_notebooklm_podcasts_00m28s.jpg", "caption": "Sources are added to the notebook for grounding.", "timestamp": "00:28" }, { "src": "media/frames/15_notebooklm_podcasts/15_notebooklm_podcasts_01m44s.jpg", "caption": "Podcast settings include instructions and interactive listening.", "timestamp": "01:44" }, { "src": "media/frames/15_notebooklm_podcasts/15_notebooklm_podcasts_02m50s.jpg", "caption": "A generated series demonstrates the tool's audio format.", "timestamp": "02:50" }],
+      "gifs": [], "pitfalls": ["Expecting immediate generation", "Treating a generated podcast as a substitute for checking source claims", "Using it where a strong human-made podcast already serves the need"],
+      "takeaways": ["Add sources before asking for source-grounded answers.", "A podcast can make niche material easier to explore.", "Steer the audio with special instructions.", "Use the generated episode as a first exposure."],
+      "practice": ["Upload a short article or paper, ask two questions about it, and generate an audio overview with a specific angle."]
+    },
+    {
+      "id": "16-image-input", "segment": "16", "segmentKey": "16_image_input", "chapter": "ch3", "number": 16, "title": "Image input",
+      "summary": "Vision-capable models turn image information into tokens they can process alongside text. For information-rich images, first ask for a transcription and verify it before asking for analysis.",
+      "objectives": ["Describe how images can enter a model as token sequences", "Use a two-step transcribe-then-analyze workflow", "Break long documents into manageable image sections", "Treat high-stakes interpretations as a starting point for expert discussion"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>An image encoder represents visual content as tokens, such as patches, that the transformer can process alongside text. The model can therefore read screenshots, labels, equations, and other visual material.</p>" },
+        { "heading": "Why it matters", "html": "<p>You can bring visual information directly into a conversation instead of retyping it. The key reliability step is checking what the model extracted before trusting its reasoning about the content.</p>" },
+        { "heading": "How to use it", "html": "<p>Upload or paste the relevant image. First ask the model to transcribe the values or equation into text or a table. Check that transcription, then ask your substantive question about the verified text. For long documents, work one section at a time.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>Visual transcription can misread small or unclear values.</li><li>Skipping verification makes errors harder to catch in a later analysis.</li><li>Medical explanations are a first draft and should prompt questions for a clinician, not replace one.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Use a screenshot of a chart or label. Request a text transcription, compare it against the original, and only then ask for a summary or comparison.</p>" }
+      ],
+      "quotes": [{ "text": "the reason I like to first transcribe the relevant information into text is because I want to make sure that the model is seeing the values correctly", "cite": "seg 16, 02:09-02:17" }, { "text": "I like to do it in two steps whenever possible.", "cite": "seg 16, 02:26-02:30" }],
+      "images": [{ "src": "media/frames/16_image_input/16_image_input_01m54s.jpg", "caption": "A visual label is used as a source for questions.", "timestamp": "01:54" }, { "src": "media/frames/16_image_input/16_image_input_02m16s.jpg", "caption": "Transcribe the image before interpreting its values.", "timestamp": "02:16" }, { "src": "media/frames/16_image_input/16_image_input_04m58s.jpg", "caption": "An equation can be converted into editable text.", "timestamp": "04:58" }],
+      "gifs": [], "pitfalls": ["Assuming the model read every number correctly", "Analyzing an image without first checking its transcription", "Using medical output instead of consulting a clinician"],
+      "takeaways": ["Image inputs are represented as tokens the model can process.", "Transcribe first, then ask questions.", "Verify values against the original image.", "Process multi-page material in sections.", "Use medical interpretations to prepare questions for a doctor."],
+      "practice": ["Upload a chart or nutrition label; ask for a table, verify every entry, then ask one comparison question.", "Convert a photographed equation to editable text and check symbols before using it."]
+    },
+    {
+      "id": "17-image-output", "segment": "17", "segmentKey": "17_image_output", "chapter": "ch3", "number": 17, "title": "Image output",
+      "summary": "Image generation translates a text request into a visual result, often through a prompt or caption passed to a separate image model. Expect different tools to have different styles and strengths.",
+      "objectives": ["Describe the prompt-to-image workflow", "Use a clear visual brief to request an image", "Compare generated results across tools", "Recognize that a text model may coordinate a separate image generator"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Image generation creates a picture from a text description. In the workflow Karpathy describes, the chat model can turn the request into a caption or prompt that is then sent to an image-generation model.</p>" },
+        { "heading": "Why it matters", "html": "<p>You can ask for a visual concept without drawing it yourself. Different systems produce noticeably different styles and levels of quality, so the choice of tool can affect the result.</p>" },
+        { "heading": "How to use it", "html": "<p>Describe the subject and the visual treatment you want, generate an image, and refine the prompt based on what is missing. If comparing tools, use the same prompt so their styles are easier to judge.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>The image may be produced by a separate model coordinated by the chat interface.</li><li>Different image tools have distinct styles and quality.</li><li>A first result may not match the prompt; iteration is part of the workflow.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Ask two image tools for the same simple scene, then refine one prompt by specifying the composition or style you want to change.</p>" }
+      ],
+      "quotes": [{ "text": "this will actually under the hood, create a caption for that image. And that caption is sent to a separate model that is an image generator model.", "cite": "seg 17, 01:56-02:03" }, { "text": "They all have a slightly different style, different quality, etc.", "cite": "seg 17, 01:02" }],
+      "images": [{ "src": "media/frames/17_image_output/17_image_output_00m06s.jpg", "caption": "The segment introduces text-prompted image generation.", "timestamp": "00:06" }, { "src": "media/frames/17_image_output/17_image_output_00m52s.jpg", "caption": "A generated image illustrates the output workflow.", "timestamp": "00:52" }, { "src": "media/frames/17_image_output/17_image_output_01m02s.jpg", "caption": "Different generators can have different visual styles.", "timestamp": "01:02" }],
+      "gifs": [], "pitfalls": ["Assuming the chat model itself directly renders pixels", "Expecting all image tools to produce the same look", "Treating the first generation as the final answer"],
+      "takeaways": ["A text prompt can drive a separate image generator.", "Describe both subject and desired visual treatment.", "Compare tools with a consistent prompt.", "Refine prompts when a result misses the brief."],
+      "practice": ["Generate the same scene in two tools and note differences in style and detail.", "Revise the prompt once to change composition while keeping the subject fixed."]
+    },
+    {
+      "id": "18-video-input", "segment": "18", "segmentKey": "18_video_input", "chapter": "ch3", "number": 18, "title": "Video input",
+      "summary": "Live camera input in advanced voice mode lets a person show a model objects or surroundings while speaking. The model may interpret video through sampled image frames rather than continuous human-like vision.",
+      "objectives": ["Use a live camera feed as conversational visual input", "Ask spoken questions while showing an object", "Understand that video may be processed as sampled frames", "Keep camera-based interpretations appropriately cautious"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Video input in the demonstration is a live camera shared during a voice conversation. The user points the camera at things and asks the model about what it sees.</p>" },
+        { "heading": "Why it matters", "html": "<p>Camera input joins speech and vision in one interaction: instead of describing every object, you can show it and talk through the question.</p>" },
+        { "heading": "How to use it", "html": "<p>Start a supported voice session, enable the camera, point it at the relevant object or scene, and ask a specific question. Keep the item visible and provide verbal context when needed.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>A smooth live experience does not mean the model sees every instant continuously.</li><li>The implementation may sample image sections or frames.</li><li>Changing camera conditions or a fleeting view can make visual interpretation uncertain.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Show the camera a familiar object and ask for a description, then ask one follow-up while changing the angle. Notice which details depend on a clear, steady view.</p>" }
+      ],
+      "quotes": [{ "text": "You basically have the camera running. You can point to that stuff and you can just talk to the model.", "cite": "seg 18, 02:15-02:18" }, { "text": "I think they actually still just take image sections. Maybe they take one image per second or something like that.", "cite": "seg 18, 02:54-02:58" }],
+      "images": [{ "src": "media/frames/18_video_input/18_video_input_00m28s.jpg", "caption": "The camera control starts a live visual interaction.", "timestamp": "00:28" }, { "src": "media/frames/18_video_input/18_video_input_01m45s.jpg", "caption": "The user can point the camera while talking to the model.", "timestamp": "01:45" }, { "src": "media/frames/18_video_input/18_video_input_02m51s.jpg", "caption": "The underlying system may sample frames from the video.", "timestamp": "02:51" }],
+      "gifs": [], "pitfalls": ["Assuming the model sees every video frame", "Expecting it to infer details that are off-camera", "Taking an uncertain visual guess as fact"],
+      "takeaways": ["Live video enables show-and-ask voice interactions.", "Keep the subject visible and ask a focused question.", "Video may be represented by sampled images.", "Give verbal context and verify uncertain observations."],
+      "practice": ["Use live camera input to ask about an object from two angles, then check whether the answer changes with visibility."]
+    },
+    {
+      "id": "19-video-generation", "segment": "19", "segmentKey": "19_video_generation", "chapter": "ch3", "number": 19, "title": "Video generation",
+      "summary": "Video-generation systems can turn prompts into short clips, and the field is changing rapidly. Karpathy compares several systems using a shared tiger-in-a-jungle prompt to show their different results.",
+      "objectives": ["Recognize text-to-video as a rapidly evolving capability", "Compare outputs using the same prompt", "Notice differences in style and quality", "Check current tools rather than relying on dated rankings"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Video generation uses a prompt to create a moving clip. The segment surveys multiple systems, including Sora and Veo 2, with a common example prompt.</p>" },
+        { "heading": "Why it matters", "html": "<p>Generated video can provide visual material from a short description, and the tools are improving quickly. Since each model has its own style and quality, comparing results is more useful than assuming one universal output.</p>" },
+        { "heading": "How to use it", "html": "<p>Pick a concise scene, describe its subject and action, generate a clip, then adjust the prompt or try another generator. Compare tools with the same prompt and review their current capabilities.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>Tool quality and availability can change quickly.</li><li>A model's style may differ from what the prompt implies.</li><li>The segment's dated comparison is not a permanent ranking.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Generate the same simple scene with two available systems and compare motion, consistency, and visual style.</p>" }
+      ],
+      "quotes": [{ "text": "a lot of tools now that can generate videos and they are incredible, and they're very rapidly evolving", "cite": "seg 19, 00:05-00:10" }, { "text": "They all have a slightly different style, different quality, etc.", "cite": "seg 19, 01:02" }],
+      "images": [{ "src": "media/frames/19_video_generation/19_video_generation_00m32s.jpg", "caption": "A shared prompt is used to compare generated clips.", "timestamp": "00:32" }, { "src": "media/frames/19_video_generation/19_video_generation_01m00s.jpg", "caption": "The systems produce clips with distinct styles.", "timestamp": "01:00" }],
+      "gifs": [], "pitfalls": ["Treating a fast-changing model comparison as timeless", "Comparing tools with different prompts", "Assuming one prompt produces consistent results across generators"],
+      "takeaways": ["Text-to-video is developing quickly.", "Use a shared prompt to compare systems.", "Judge motion, consistency, and style separately.", "Recheck current capabilities before choosing a tool."],
+      "practice": ["Prompt two video generators with the same short scene and compare their outputs on motion and style."]
+    },
+    {
+      "id": "20-chatgpt-memory", "segment": "20", "segmentKey": "20_chatgpt_memory", "chapter": "ch4", "number": 20, "title": "ChatGPT memory",
+      "summary": "Memory stores selected facts or preferences about a user so they can inform future chats. It is separate from the temporary context of an individual conversation and can be reviewed or edited.",
+      "objectives": ["Distinguish chat context from persistent memory", "Ask the system to remember a durable preference", "Review, edit, or delete saved memory", "Consider privacy when choosing what to retain"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Memory is a list of text summaries about you that can persist across conversations. The talk describes it as a knowledge bank prepended to future chats, separate from the context in the current chat.</p>" },
+        { "heading": "Why it matters", "html": "<p>Persistent preferences can make repeated tasks, such as recommendations, more relevant without restating the same background each time.</p>" },
+        { "heading": "How to use it", "html": "<p>When a fact is useful across conversations, explicitly ask the assistant to remember it, or allow the feature to capture it where supported. Use the memory manager to inspect, edit, add, or delete entries.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>Memory does not preserve every conversation automatically.</li><li>Do not confuse a chat's temporary context with information saved across chats.</li><li>Stored memories are personal data; choose carefully what you want retained.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Save one low-risk preference, start a new conversation, and check whether it is applied. Then open memory management and remove it.</p>" }
+      ],
+      "quotes": [{ "text": "a memory bank is basically a separate piece of Chachi PT that is kind of like a database of knowledge about you", "cite": "seg 20, 02:06-02:13" }, { "text": "this database of knowledge is always prepended to all the conversations so that the model has access to it", "cite": "seg 20, 02:17-02:24" }],
+      "images": [], "gifs": [], "pitfalls": ["Assuming every detail will be remembered", "Expecting temporary chat context to persist", "Saving personal information without considering its sensitivity"],
+      "takeaways": ["Memory is a persistent text store about the user.", "It is distinct from the current conversation context.", "Explicitly request important durable memories.", "Review and edit saved entries periodically."],
+      "practice": ["Ask the assistant to remember a harmless preference, test it in a new chat, then delete it from the memory manager."]
+    },
+    {
+      "id": "21-custom-instructions", "segment": "21", "segmentKey": "21_custom_instructions", "chapter": "ch4", "number": 21, "title": "Custom instructions",
+      "summary": "Custom instructions provide standing guidance about how an assistant should respond and what background about you matters. Because they apply across chats, reserve them for durable preferences.",
+      "objectives": ["Explain how custom instructions differ from per-chat prompts", "Set global style and educational preferences", "Add relevant background and language defaults", "Keep global instructions concise and durable"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Custom instructions are persistent settings that shape an assistant's style and the user context it should consider across conversations.</p>" },
+        { "heading": "Why it matters", "html": "<p>A standing preference avoids repeating the same direction in every chat. Karpathy's examples include conversational tone, educational explanations, and a consistent formality level for Korean.</p>" },
+        { "heading": "How to use it", "html": "<p>Open the app's customization settings and add a few direct rules about response style and durable background. For example, specify whether you prefer plain language or a particular language register.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>Instructions affect many conversations, so avoid directions that only apply to one task.</li><li>Without a preferred register, language tone can vary.</li><li>Equivalent settings may be named differently in other apps.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Write one style preference and one useful background detail. Test them in a new conversation, then revise anything too broad or restrictive.</p>" }
+      ],
+      "quotes": [{ "text": "just don't be like an HR business partner. Just talk to me normally.", "cite": "seg 21, 00:26-00:30" }, { "text": "anything you want to modify about chat GPT globally between conversations, you would kind of put it here into your custom instructions.", "cite": "seg 21, 01:11-01:15" }],
+      "images": [], "gifs": [], "pitfalls": ["Putting one-off task directions in global settings", "Leaving important language tone preferences implicit", "Assuming every app uses the same settings name"],
+      "takeaways": ["Custom instructions apply across conversations.", "Use them for stable style and personal context.", "Specify tone or language register when it matters.", "Look for equivalent settings in other LLM apps."],
+      "practice": ["Add a concise global preference, try it in a new chat, and edit it if the response style is too broad."]
+    },
+    {
+      "id": "22-custom-gpts", "segment": "22", "segmentKey": "22_custom_gpts", "chapter": "ch4", "number": 22, "title": "Custom GPTs",
+      "summary": "A custom GPT packages a reusable prompt for a recurring task. Clear task instructions plus concrete examples can reduce repeated setup and help the model follow a consistent output format.",
+      "objectives": ["Identify a repetitive prompt worth saving", "Build instructions from background, task, and examples", "Use few-shot examples to demonstrate desired outputs", "Structure multi-step workflows explicitly"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>Custom GPTs are saved configurations built from prompting. They can include context, task instructions, and example inputs and outputs; the feature saves the effort of pasting the same prompt repeatedly.</p>" },
+        { "heading": "Why it matters", "html": "<p>Examples make the desired behavior concrete. Karpathy demonstrates Korean vocabulary extraction into Anki-ready pairs and a translator that gives a full translation followed by a detailed breakdown.</p>" },
+        { "heading": "How to use it", "html": "<p>Start with a repeated task. In the GPT instructions, state relevant background, define the task and output format, and include several representative examples. For a multi-step image task, spell out the sequence, such as OCR, translation, then explanation.</p><p>Delimit longer examples clearly, using tags if helpful, so their boundaries are obvious.</p>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>A custom GPT is a prompt configuration, not a fundamentally different model.</li><li>Vague instructions without examples can produce inconsistent output.</li><li>Do not assume a custom GPT configuration is portable to every app.</li></ul>" },
+        { "heading": "In practice", "html": "<p>Turn a prompt you reuse into a small custom GPT. Add two input-output examples and test it with a new input that was not in the examples.</p>" }
+      ],
+      "quotes": [{ "text": "This is all just done via prompting. Nothing special is happening here.", "cite": "seg 22, 01:10-01:12" }, { "text": "what this feature really is, is that it's just saving you prompting time.", "cite": "seg 22, 02:32-02:36" }, { "text": "it's so much better if you show them by example how to perform the task.", "cite": "seg 22, 05:41-05:44" }],
+      "images": [], "gifs": [], "pitfalls": ["Expecting the GPT feature to add special model capabilities", "Relying on a vague zero-shot task description", "Leaving example boundaries unclear", "Assuming the setup works identically outside its platform"],
+      "takeaways": ["Save a prompt when you repeatedly perform the same task.", "Combine background, a specific task, and output requirements.", "Show desired behavior with concrete examples.", "Break complex workflows into explicit steps.", "Test examples against new inputs."],
+      "practice": ["Build a reusable prompt configuration for a repeated task, including two clear input-output examples.", "Test it on a fresh case and adjust instructions where output diverges from the example." ]
+    },
+    {
+      "id": "23-summary", "segment": "23", "segmentKey": "23_summary", "chapter": "ch5", "number": 23, "title": "The practical LLM checklist",
+      "summary": "The talk closes with a changing ecosystem of apps and a practical map for choosing models and tools. Match the app and model to the task, use reasoning and tools deliberately, and keep experimenting as capabilities shift.",
+      "objectives": ["Choose an LLM app by its strengths and the task at hand", "Check model size and tier before judging an answer", "Escalate to reasoning models when ordinary models struggle", "Select tools for current information, computation, and creation", "Recognize modality and platform differences"],
+      "sections": [
+        { "heading": "What it is", "html": "<p>The LLM app ecosystem is competitive: ChatGPT is a strong default, while other apps can excel at particular jobs. The talk's mental models connect model size, reasoning, tools, multimodal input and output, and quality-of-life features.</p>" },
+        { "heading": "Why it matters", "html": "<p>The model and app behind a chat affect what it knows and how it performs. A small model may be less knowledgeable or more prone to mistakes; search, Python, and creative tools can extend what the model can do.</p>" },
+        { "heading": "How to use it", "html": "<ol><li>Identify the task and choose an app suited to it.</li><li>Check which model and tier you are using.</li><li>Try a standard model first; switch to a reasoning model if a hard math, code, or logic task remains unsolved.</li><li>Use search for fresh facts, Python for calculations and plots, and creation tools for prototypes or media.</li><li>Check whether needed voice, image, or video features are available on your current platform.</li></ol>" },
+        { "heading": "Pitfalls & misconceptions", "html": "<ul><li>No single app is best at every task.</li><li>Fresh information may not be in a model's training data; use search.</li><li>Reasoning mode is not necessary for every request.</li><li>Features can differ between web and mobile, and multimodal systems may handle media natively or through separate tools.</li></ul>" },
+        { "heading": "In practice", "html": "<p>For your next task, write down the job, the model and tier, any tool needed, and what you will verify. If the first approach fails, change one part of the setup and try again.</p>" }
+      ],
+      "quotes": [{ "text": "you're talking basically to a zip file.", "cite": "seg 23, 01:20" }, { "text": "try without reasoning first. And if your model is not solving that kind of a problem, try to switch to a reasoning model", "cite": "seg 23, 02:11-02:16" }, { "text": "all of this is a little bit of a zoo.", "cite": "seg 23, 04:09" }],
+      "images": [], "gifs": [], "pitfalls": ["Assuming one app is best for every use", "Ignoring the selected model and plan tier", "Using reasoning mode by default for easy requests", "Expecting training data to include fresh facts", "Assuming features are identical across web and mobile"],
+      "takeaways": ["Choose an app for its task-specific strengths; keep a capable default for general use.", "Know your model and tier because capability varies.", "Try without reasoning first, then escalate when the task needs it.", "Use search for current facts and Python for calculations or plots.", "Check whether multimodal features are native or tool-mediated, and whether the platform supports them.", "Experiment over time as the app ecosystem changes."],
+      "practice": ["Use the checklist on one real task: choose an app and model, decide whether search or another tool is needed, and verify one key claim.", "Try a task first without reasoning; if it fails, switch to a reasoning model and compare the results."]
+    }
+  ]
+}
